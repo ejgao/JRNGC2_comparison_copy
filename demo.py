@@ -1,14 +1,7 @@
 import torch
 
 from tgc.model import JRNGC
-from tgc.data import (
-    lorenz_96,
-    var_stable,
-    custom_var_function,
-    fmri_net_sim,
-    dream3_trajectories,
-    dream4_trajectories,
-)
+from tgc.data import lorenz_96, var_stable,fmri_net_sim, dream3_trajectories,dream4_trajectories
 from tgc.metrics import two_classify_metrics, remove_self_connection
 from tgc.runcase import batch_trainer, case_fix, print_case_list
 
@@ -22,32 +15,47 @@ import os
 import json
 from model_params import count_num_param
 
+
 parser = argparse.ArgumentParser()
-parser.add_argument("--yaml_dir", type=str, default="./F_var.yaml", help="yaml path")
-parser.add_argument(
-    "--data_type", type=str, default="var", choices=["var", "lorenz", "dream3", "fmri"]
-)
-parser.add_argument("--gpu", type=int, default=0)
-parser.add_argument("--var_t", type=int, default=500)
-parser.add_argument("--var_t_eval", type=int, default=100)
-parser.add_argument("--f_subject", type=int, default=0)
-parser.add_argument("--f_t", type=int, default=200)
-parser.add_argument("--f_t_eval", type=int, default=0)
+parser.add_argument("--yaml_dir",type=str, default="./F_var.yaml", help="yaml path")
+parser.add_argument("--data_type",type=str,default='var',choices=['var','lorenz','dream3','fmri'])
+parser.add_argument("--gpu",type=int,default=0)
+
+parser.add_argument("--var_t",type=int,default=500)
+parser.add_argument("--var_t_eval",type=int,default=100)
+
+parser.add_argument("--f_subject",type=int,default=0)
+parser.add_argument("--f_t",type=int,default=200)
+parser.add_argument("--f_t_eval",type=int,default=0)
+
 # parser.add_argument("--f_lorenz",type=int,default=10)
-parser.add_argument("--lorenz_t", type=int, default=500)
-parser.add_argument("--lorenz_t_eval", type=int, default=100)
-parser.add_argument("--dream3_subject", type=int, default=3)
-parser.add_argument("--model_type", type=str, default="JRNGC", choices=["JRNGC"])
-parser.add_argument(
-    "--current_start", type=int, default=0, help="if the running is interupt"
-)
-parser.add_argument("--jaco_param", type=float, help="for crossing the jaco param")
-parser.add_argument("--jrngc_relu", action="store_true")
+parser.add_argument("--lorenz_t",type=int,default=500)
+parser.add_argument("--lorenz_t_eval",type=int,default=100)
+
+parser.add_argument("--dream3_subject",type=int,default=3)
+
+parser.add_argument('--model_type',type=str,default='JRNGC',choices=['JRNGC'])
+parser.add_argument('--current_start',type=int,default=0,help='if the running is interupt')
+
+parser.add_argument("--jaco_param",type=float,help='for crossing the jaco param')
+parser.add_argument("--jrngc_relu",action="store_true")
+
+
+
+
+
+
+
+
+
+
+
+
 
 args = parser.parse_args()
-device = "cuda:{}".format(args.gpu) if torch.cuda.is_available() else "cpu"  # ad
+device = "cuda:{}".format(args.gpu) if torch.cuda.is_available() else "cpu"
 using_yaml_file = args.yaml_dir
-with open(using_yaml_file, "r") as f:
+with open(using_yaml_file, 'r') as f:
     params = yaml.load(f, Loader=yaml.SafeLoader)
 
 data_dir = "./data/{}/".format(args.data_type)
@@ -59,14 +67,12 @@ seed = 0
 
 
 def get_model(dir):
-    data_parameters = np.load(dir + "data_parameters.npy", allow_pickle=True).item()
-    model_parameters = np.load(dir + "model_parameters.npy", allow_pickle=True).item()
+    data_parameters = np.load(dir + 'data_parameters.npy', allow_pickle=True).item()
+    model_parameters = np.load(dir + 'model_parameters.npy', allow_pickle=True).item()
     print(data_parameters)
     print(model_parameters)
 
-    return data_parameters, torch.load(dir + "model.pt")
-
-# add any functions defined
+    return data_parameters, torch.load(dir+'model.pt')
 
 if "__main__" == __name__:
     tot_perf_lag = {}
@@ -343,3 +349,5 @@ if "__main__" == __name__:
 
     # with open(json_filename+"_"+key_metric[1]+"_"+yaml_filename+"_"+'yaml'+".json",'w') as f:
     #     json.dump(tot_perf_no_lag,f)
+
+    
